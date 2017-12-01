@@ -1,11 +1,11 @@
 /**
- * opencv: Camera/OpenGL integration demo
+ * project: 163 final project
  *
  * Conner Short
  * CMPE 163
- * November 2017
+ * December 2017
  *
- * camera.cpp: OpenCV camera functionality and frame-fetch methods
+ *  camera.cpp: OpenCV camera functionality and frame-fetch methods
 **/
 #include <opencv2/opencv.hpp>
 #include <iostream>

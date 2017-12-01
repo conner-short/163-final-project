@@ -1,9 +1,9 @@
 /**
- * diffuse: Diffuse reflection on arrow
+ * project: 163 final project
  *
  * Conner Short
  * CMPE 163
- * November 2017
+ * December 2017
  *
  * view.h: Drawing routines and callbacks
 **/
