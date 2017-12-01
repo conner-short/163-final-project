@@ -1,0 +1,3 @@
+To build this program, run "make" from a terminal. It is assumed that
+GNU Make is installed on the build system. An executable named
+"project" will be generated in the project root.
