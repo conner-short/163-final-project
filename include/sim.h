@@ -35,7 +35,7 @@ int sim_main();
  *
  * Returns an index for the registered function
 **/
-int sim_register_peridoc_function(void (*callback)(),
+int sim_register_periodic_function(void (*callback)(),
 	double tick_rate,
 	int persistent);
 

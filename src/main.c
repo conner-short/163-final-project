@@ -26,7 +26,10 @@ void idle() {
 }
 
 int main(int argc, char** argv) {
+	if(!init_camera()) {return 1;}
+
 	glutInit(&argc, argv);
+	glutInitWindowSize(900, 900);
 	glutCreateWindow(WINDOW_TITLE);
 
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
@@ -34,10 +37,7 @@ int main(int argc, char** argv) {
 	init_sim();
 	init_view();
 
-	/* This turns on the camera through OpenCV; uncomment to enable. It doesn't
-	 * project onto anything, though. */
-	/*if(!init_camera()) {return 1;}
-	sim_register_periodic_function(capture_frame, 30.0, 0);*/
+	sim_register_periodic_function(capture_frame, 30.0, 0);
 
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
