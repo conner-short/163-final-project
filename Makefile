@@ -28,7 +28,7 @@ $(OBJDIR)/main.o: include/camera.h include/sim.h include/view.h
 $(OBJDIR)/sim.o: include/sim.h
 $(OBJDIR)/vector.o: include/vector.h
 $(OBJDIR)/view.o: include/camera.h include/vector.h include/view.h \
-include/faces.h
+include/faces.h include/main.h
 $(OBJDIR)/faces.o: include/faces.h include/vector.h
 
 .PHONY: clean
