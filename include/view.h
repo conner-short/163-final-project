@@ -10,6 +10,8 @@
 #ifndef _VIEW_H
 #define _VIEW_H
 
+#include "vector.h"
+
 /**
  * Initializes view system (OpenGL, etc)
 **/

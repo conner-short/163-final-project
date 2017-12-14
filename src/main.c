@@ -8,6 +8,7 @@
  * main.c: Main program
 **/
 #include <GL/glut.h>
+#include <stdio.h>
 #include <unistd.h>
 
 #include "camera.h"
@@ -26,7 +27,10 @@ void idle() {
 }
 
 int main(int argc, char** argv) {
-	if(!init_camera()) {return 1;}
+	if(!init_camera()) {
+		fprintf(stderr, "Error: No camera detected. Exiting...\n");
+		return 1;
+	}
 
 	glutInit(&argc, argv);
 	glutInitWindowSize(900, 900);

@@ -14,6 +14,7 @@
 #include <stdlib.h>
 
 #include "camera.h"
+#include "faces.h"
 #include "vector.h"
 #include "view.h"
 
@@ -53,20 +54,138 @@ unsigned int cube_floor_triangles[6] = {
 
 /* Arrow */
 
-struct vector_3d arrow_vertices[7] = {
-  {.x =  0.0000, .y =  0.0000, .z = 0.0},
-  {.x =  0.1250, .y = -0.1250, .z = 0.0},
-  {.x =  0.0625, .y = -0.1250, .z = 0.0},
-  {.x =  0.0625, .y = -0.2500, .z = 0.0},
-  {.x = -0.0625, .y = -0.2500, .z = 0.0},
-  {.x = -0.0625, .y = -0.1250, .z = 0.0},
-  {.x = -0.1250, .y = -0.1250, .z = 0.0}
+struct vector_3d arrow_vertices[14] = {
+  {.x =  0.0000, .y =  0.0000 - 1.0, .z =  0.0 + 1.0},
+  {.x =  0.1250, .y = -0.1250 - 1.0, .z =  0.0 + 1.0},
+  {.x =  0.0625, .y = -0.1250 - 1.0, .z =  0.0 + 1.0},
+  {.x =  0.0625, .y = -0.2500 - 1.0, .z =  0.0 + 1.0},
+  {.x = -0.0625, .y = -0.2500 - 1.0, .z =  0.0 + 1.0},
+  {.x = -0.0625, .y = -0.1250 - 1.0, .z =  0.0 + 1.0},
+  {.x = -0.1250, .y = -0.1250 - 1.0, .z =  0.0 + 1.0},
+	{.x =  0.0000, .y =  0.0000 - 1.0, .z = -0.03125 + 1.0},
+  {.x =  0.1250, .y = -0.1250 - 1.0, .z = -0.03125 + 1.0},
+  {.x =  0.0625, .y = -0.1250 - 1.0, .z = -0.03125 + 1.0},
+  {.x =  0.0625, .y = -0.2500 - 1.0, .z = -0.03125 + 1.0},
+  {.x = -0.0625, .y = -0.2500 - 1.0, .z = -0.03125 + 1.0},
+  {.x = -0.0625, .y = -0.1250 - 1.0, .z = -0.03125 + 1.0},
+  {.x = -0.1250, .y = -0.1250 - 1.0, .z = -0.03125 + 1.0}
 };
 
-unsigned int arrow_triangles[9] = {
-  0, 1, 6,
-  2, 3, 4,
-  4, 5, 2
+unsigned int arrow_face_vertices[9][7] = {
+	{7, 13, 12, 11, 10, 9, 8},
+	{0, 1, 8, 7},
+	{0, 7, 13, 6},
+	{1, 2, 9, 8},
+	{5, 6, 13, 12},
+	{2, 3, 10, 9},
+	{4, 5, 12, 11},
+	{3, 4, 11, 10},
+	{0, 6, 5, 4, 3, 2, 1}
+};
+
+unsigned int arrow_triangles_arrays[9][9] = {
+	{
+		0, 6, 1,
+		2, 5, 4,
+		2, 4, 3
+	},
+	{
+		0, 1, 8,
+		0, 8, 7
+	},
+	{
+		0, 7, 13,
+		0, 13, 6
+	},
+	{
+		1, 2, 9,
+		1, 9, 8
+	},
+	{
+		5, 6, 13,
+		5, 13, 12
+	},
+	{
+		2, 3, 10,
+		2, 10, 9
+	},
+	{
+		4, 5, 12,
+		4, 12, 11
+	},
+	{
+		3, 4, 11,
+		3, 11, 10
+	},
+	{
+		7, 13, 8,
+		9, 12, 11,
+		9, 11, 10
+	}
+};
+
+struct face arrow_faces[9] = {
+	{
+		.num_vertices = 7,
+		.vertices_ccw = arrow_face_vertices[0],
+		.num_triangles = 3,
+		.triangles = arrow_triangles_arrays[0]
+	},
+	{
+		.num_vertices = 4,
+		.vertices_ccw = arrow_face_vertices[1],
+		.num_triangles = 2,
+		.triangles = arrow_triangles_arrays[1]
+	},
+	{
+		.num_vertices = 4,
+		.vertices_ccw = arrow_face_vertices[2],
+		.num_triangles = 2,
+		.triangles = arrow_triangles_arrays[2]
+	},
+	{
+		.num_vertices = 4,
+		.vertices_ccw = arrow_face_vertices[3],
+		.num_triangles = 2,
+		.triangles = arrow_triangles_arrays[3]
+	},
+	{
+		.num_vertices = 4,
+		.vertices_ccw = arrow_face_vertices[4],
+		.num_triangles = 2,
+		.triangles = arrow_triangles_arrays[4]
+	},
+	{
+		.num_vertices = 4,
+		.vertices_ccw = arrow_face_vertices[5],
+		.num_triangles = 2,
+		.triangles = arrow_triangles_arrays[5]
+	},
+	{
+		.num_vertices = 4,
+		.vertices_ccw = arrow_face_vertices[6],
+		.num_triangles = 2,
+		.triangles = arrow_triangles_arrays[6]
+	},
+	{
+		.num_vertices = 4,
+		.vertices_ccw = arrow_face_vertices[7],
+		.num_triangles = 2,
+		.triangles = arrow_triangles_arrays[7]
+	},
+	{
+		.num_vertices = 7,
+		.vertices_ccw = arrow_face_vertices[8],
+		.num_triangles = 3,
+		.triangles = arrow_triangles_arrays[8]
+	}
+};
+
+struct face_list arrow_face_list = {
+	.num_faces = 9,
+	.faces = arrow_faces,
+	.num_vertices = 14,
+	.vertices = arrow_vertices
 };
 
 /* Plane */
@@ -79,7 +198,7 @@ struct vector_3d plane_vertices[4] = {
 };
 
 struct vector_3d* plane_texel_vertices = NULL;
-struct color_rgb_uint8* plane_texel_colors = NULL;
+struct color_rgb* plane_texel_colors = NULL;
 int num_texel_vertices;
 
 /* Misc */
@@ -119,8 +238,7 @@ void init_view() {
 		exit(EXIT_FAILURE);
 	}
 
-	plane_texel_colors = malloc(num_texel_vertices * 
-		sizeof(struct color_rgb_uint8));
+	plane_texel_colors = malloc(num_texel_vertices * sizeof(struct color_rgb));
 	if(plane_texel_colors == NULL) {
 		perror("init_view");
 		exit(EXIT_FAILURE);
@@ -175,41 +293,7 @@ void draw_cube() {
 }
 
 void draw_shaded_arrow() {
-	struct vector_3d tmp_arrow_vertices[7];
-	struct vector_3d tmp_shadow_vertices[7];
-	int i;
-	
-	/* Calculate the shadow vertices */
-	for(i = 0; i < 7; i++) {
-		ray_projection(&(arrow_vertices[i]),
-			&light,
-			&(tmp_shadow_vertices[i]),
-			&(cube_vertices[0]),
-			&(cube_vertices[1]),
-			&(cube_vertices[2]));
-	}
-	
-	/* Transform */
-	for(i = 0; i < 7; i++) {
-		wv_transform(&viewer, &(arrow_vertices[i]), &(tmp_arrow_vertices[i]));
-		perspective_projection(&(tmp_arrow_vertices[i]), &(tmp_arrow_vertices[i]));
-		
-		wv_transform(&viewer, &(tmp_shadow_vertices[i]), &(tmp_shadow_vertices[i]));
-		perspective_projection(&(tmp_shadow_vertices[i]),
-			&(tmp_shadow_vertices[i]));
-	}
-	
-	/* Draw the shadow */
-	glColor3d(0.0, 0.0, 0.0);
-	
-	glVertexPointer(3, GL_DOUBLE, 0, tmp_shadow_vertices);
-	glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, arrow_triangles);
-	
-	/* Draw the arrow */
-	glColor3d(1.0, 0.0, 0.0);
-	
-	glVertexPointer(3, GL_DOUBLE, 0, tmp_arrow_vertices);
-	glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, arrow_triangles);
+	draw_face_list(&arrow_face_list, &viewer, &light);
 }
 
 void copy_colors() {

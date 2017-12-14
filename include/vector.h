@@ -14,8 +14,7 @@
 
 struct vector_2d {double x, y;};
 struct vector_3d {double x, y, z;};
-struct color_rgb_double {double r, g, b;};
-struct color_rgb_uint8 {uint8_t r, g, b;};
+struct color_rgb {uint8_t r, g, b;};
 
 /**
  * Computes the dot product a ⋅ b
