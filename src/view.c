@@ -15,6 +15,7 @@
 
 #include "camera.h"
 #include "faces.h"
+#include "main.h"
 #include "vector.h"
 #include "view.h"
 
@@ -41,11 +42,8 @@ struct vector_3d cube_vertices[8] = {
 
 struct vector_3d t_cube_vertices[8];
 
-unsigned int cube_lines[24] = {
-	0, 1,    1, 2,    2, 3,    3, 0,
-	4, 5,    5, 6,    6, 7,    7, 4,
-	0, 4,    1, 5,    2, 6,    3, 7
-};
+unsigned int cube_back_lines[6] = {3, 7, 7, 6, 6, 2};
+unsigned int cube_front_lines[10] = {0, 4, 4, 5, 5, 1, 5, 6, 4, 7};
 
 unsigned int cube_floor_triangles[6] = {
 	0, 1, 3,
@@ -55,21 +53,23 @@ unsigned int cube_floor_triangles[6] = {
 /* Arrow */
 
 struct vector_3d arrow_vertices[14] = {
-  {.x =  0.0000, .y =  0.0000, .z =  0.0 + 0.5},
-  {.x =  0.1250, .y = -0.1250, .z =  0.0 + 0.5},
-  {.x =  0.0625, .y = -0.1250, .z =  0.0 + 0.5},
-  {.x =  0.0625, .y = -0.2500, .z =  0.0 + 0.5},
-  {.x = -0.0625, .y = -0.2500, .z =  0.0 + 0.5},
-  {.x = -0.0625, .y = -0.1250, .z =  0.0 + 0.5},
-  {.x = -0.1250, .y = -0.1250, .z =  0.0 + 0.5},
-	{.x =  0.0000, .y =  0.0000, .z = -0.03125 + 0.5},
-  {.x =  0.1250, .y = -0.1250, .z = -0.03125 + 0.5},
-  {.x =  0.0625, .y = -0.1250, .z = -0.03125 + 0.5},
-  {.x =  0.0625, .y = -0.2500, .z = -0.03125 + 0.5},
-  {.x = -0.0625, .y = -0.2500, .z = -0.03125 + 0.5},
-  {.x = -0.0625, .y = -0.1250, .z = -0.03125 + 0.5},
-  {.x = -0.1250, .y = -0.1250, .z = -0.03125 + 0.5}
+  {.x =  0.0000, .y =  0.0000, .z =  0.0},
+  {.x =  0.1250, .y = -0.1250, .z =  0.0},
+  {.x =  0.0625, .y = -0.1250, .z =  0.0},
+  {.x =  0.0625, .y = -0.2500, .z =  0.0},
+  {.x = -0.0625, .y = -0.2500, .z =  0.0},
+  {.x = -0.0625, .y = -0.1250, .z =  0.0},
+  {.x = -0.1250, .y = -0.1250, .z =  0.0},
+	{.x =  0.0000, .y =  0.0000, .z = -0.03125},
+  {.x =  0.1250, .y = -0.1250, .z = -0.03125},
+  {.x =  0.0625, .y = -0.1250, .z = -0.03125},
+  {.x =  0.0625, .y = -0.2500, .z = -0.03125},
+  {.x = -0.0625, .y = -0.2500, .z = -0.03125},
+  {.x = -0.0625, .y = -0.1250, .z = -0.03125},
+  {.x = -0.1250, .y = -0.1250, .z = -0.03125}
 };
+
+struct vector_3d arrow_vertices_translated[14];
 
 unsigned int arrow_face_vertices[9][7] = {
 	{7, 13, 12, 11, 10, 9, 8},
@@ -185,7 +185,7 @@ struct face_list arrow_face_list = {
 	.num_faces = 9,
 	.faces = arrow_faces,
 	.num_vertices = 14,
-	.vertices = arrow_vertices
+	.vertices = arrow_vertices_translated
 };
 
 /* Plane */
@@ -284,15 +284,32 @@ void init_view() {
 	}
 }
 
-void draw_cube() {
+void draw_cube_back() {
 	glColor3d(1.0, 1.0, 1.0);
-	
 	glVertexPointer(3, GL_DOUBLE, 0, t_cube_vertices);
-	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, cube_lines);
+	glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, cube_back_lines);
+}
+
+void draw_cube_front() {
+	glColor3d(1.0, 1.0, 1.0);
+	glVertexPointer(3, GL_DOUBLE, 0, t_cube_vertices);
+	glDrawElements(GL_LINES, 10, GL_UNSIGNED_INT, cube_front_lines);
+}
+
+void draw_floor() {
+	glColor3d(1.0, 1.0, 1.0);
+	glVertexPointer(3, GL_DOUBLE, 0, t_cube_vertices);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, cube_floor_triangles);
 }
 
 void draw_shaded_arrow() {
+	int i;
+	for(i = 0; i < 14; i++) {
+		arrow_vertices_translated[i].x = arrow_vertices[i].x + x_translation;
+		arrow_vertices_translated[i].y = arrow_vertices[i].y + y_translation;
+		arrow_vertices_translated[i].z = arrow_vertices[i].z + z_translation;
+	}
+
 	draw_face_list(&arrow_face_list, &viewer, &light);
 }
 
@@ -343,8 +360,10 @@ void draw_view() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	draw_plane();
-	draw_cube();
+	draw_floor();
+	draw_cube_back();
 	draw_shaded_arrow();
+	draw_cube_front();
 
 	glutSwapBuffers();
 }

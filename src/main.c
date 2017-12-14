@@ -8,6 +8,7 @@
  * main.c: Main program
 **/
 #include <GL/glut.h>
+#include <math.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -26,6 +27,23 @@ void idle() {
 	usleep(1000);
 }
 
+double x_translation;
+double y_translation;
+double z_translation;
+
+double init_angle = 0.0;
+double ampl = 0.5;
+double angle = 0.0;
+
+void move_cursor() {
+	x_translation = ampl * cos(angle + init_angle);
+	y_translation = 0.5 * x_translation;
+	z_translation = ampl * sin(angle + init_angle);
+
+	angle += M_PI / 75.0;
+	if(angle >= 2.0 * M_PI) angle -= 2.0 * M_PI;
+}
+
 int main(int argc, char** argv) {
 	if(!init_camera()) {
 		fprintf(stderr, "Error: No camera detected. Exiting...\n");
@@ -42,6 +60,7 @@ int main(int argc, char** argv) {
 	init_view();
 
 	sim_register_periodic_function(capture_frame, 30.0, 0);
+	sim_register_periodic_function(move_cursor, 60.0, 1);
 
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);

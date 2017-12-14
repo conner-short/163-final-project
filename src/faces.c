@@ -83,7 +83,7 @@ void draw_face_shadow(struct face* f,
 		perspective_projection(&(v_tmp[2]), &(v_tmp[2]));
 
 		/* Draw */
-		glColor3d(0.4, 0.4, 0.4);
+		glColor3d(0.0, 0.0, 0.0);
 		glVertexPointer(3, GL_DOUBLE, 0, v_tmp);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
