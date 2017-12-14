@@ -8,10 +8,12 @@
  * faces.c: Drawing operations for face lists and faces
 **/
 #include <GL/gl.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "faces.h"
+#include "light.h"
 #include "vector.h"
 
 void determine_face_normal(struct face* f,
@@ -28,16 +30,57 @@ void determine_face_normal(struct face* f,
 	p2.z = vertices[f->vertices_ccw[2]].z - vertices[f->vertices_ccw[0]].z;
 
 	vector_3d_cross_product(&p1, &p2, o);
+
+	double mag = sqrt(o->x * o->x + o->y * o->y + o->z * o->z);
+
+	o->x /= mag;
+	o->y /= mag;
+	o->z /= mag;
 }
 
-void draw_face(struct face* f, struct vector_3d* view_vertices) {
-	glColor3d(0.8, 0.0, 0.0);
-	glVertexPointer(3, GL_DOUBLE, 0, view_vertices);
+void draw_face(struct face_list* l,
+	struct face* f,
+	struct vector_3d* light,
+	struct vector_3d* viewer) {
+	struct vector_3d* v_tmp = malloc(l->num_vertices * sizeof(struct vector_3d));
+	struct color_rgb* colors = malloc(l->num_vertices * sizeof(struct color_rgb));
+
+	struct vector_3d n;
+	determine_face_normal(f, l->vertices, &n);
+
+	struct color_rgb k = {0xCC, 0x00, 0x00};
+
+	int i;
+	for(i = 0; i < f->num_vertices; i++) {
+		/* Calculate color for each face vertex */
+		light_vertex(light,
+			&n,
+			&(l->vertices[f->vertices_ccw[i]]),
+			&k,
+			&(colors[f->vertices_ccw[i]]));
+
+		/* Transform each face vertex */
+		wv_transform(viewer,
+			&(l->vertices[f->vertices_ccw[i]]),
+			&(v_tmp[f->vertices_ccw[i]]));
+		perspective_projection(&(v_tmp[f->vertices_ccw[i]]),
+			&(v_tmp[f->vertices_ccw[i]]));
+	}
+
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	glVertexPointer(3, GL_DOUBLE, 0, v_tmp);
+	glColorPointer(3, GL_UNSIGNED_BYTE, 0, colors);
 
 	glDrawElements(GL_TRIANGLES,
 		3 * f->num_triangles,
 		GL_UNSIGNED_INT,
 		f->triangles);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+
+	free(v_tmp);
+	free(colors);
 }
 
 void draw_face_shadow(struct face* f,
@@ -117,26 +160,10 @@ void draw_face_list_shadow(struct face_list* list,
 void draw_face_list(struct face_list* list,
 	struct vector_3d* viewer,
 	struct vector_3d* light) {
-	struct vector_3d* v_tmp = malloc(list->num_vertices *
-		sizeof(struct vector_3d));
-	if(v_tmp == NULL) {
-		perror("draw_face_list");
-		exit(EXIT_FAILURE);
-	}
-
 	draw_face_list_shadow(list, viewer, light);
 
-	/* Transform vertices */
-
 	int i;
-	for(i = 0; i < list->num_vertices; i++) {
-		wv_transform(viewer, &(list->vertices[i]), &(v_tmp[i]));
-		perspective_projection(&(v_tmp[i]), &(v_tmp[i]));
-	}
-
 	for(i = 0; i < list->num_faces; i++) {
-		draw_face(&(list->faces[i]), v_tmp);
+		draw_face(list, &(list->faces[i]), light, viewer);
 	}
-
-	free(v_tmp);
 }

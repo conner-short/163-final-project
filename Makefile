@@ -3,7 +3,8 @@ CFLAGS = -g -Wall
 CXXFLAGS = -g -Wall
 
 LIBS = -lstdc++ `pkg-config --libs opencv` -lGL -lglut -lm
-OBJ = $(addprefix $(OBJDIR)/,camera.o main.o sim.o vector.o view.o faces.o)
+OBJ = $(addprefix $(OBJDIR)/,camera.o main.o sim.o vector.o view.o faces.o \
+light.o)
 BIN = project
 
 all: $(BIN)
@@ -29,7 +30,8 @@ $(OBJDIR)/sim.o: include/sim.h
 $(OBJDIR)/vector.o: include/vector.h
 $(OBJDIR)/view.o: include/camera.h include/vector.h include/view.h \
 include/faces.h include/main.h
-$(OBJDIR)/faces.o: include/faces.h include/vector.h
+$(OBJDIR)/faces.o: include/faces.h include/vector.h include/light.h
+$(OBJDIR)/light.o: include/vector.h
 
 .PHONY: clean
 clean:
